@@ -18,15 +18,21 @@ variable "vpc_id" {
   type        = string
 }
 
-# Subnet IDs for deploying RDS Proxy and NLB
+# Subnet IDs for deploying resources
 variable "subnet_ids" {
-  description = "List of subnet IDs for the RDS Proxy and NLB."
+  description = "List of subnet IDs for the NLB and Lambda function."
   type        = list(string)
 }
 
-# Subnet IDs for RDS Proxy (can be the same as NLB or different)
-variable "rds_proxy_subnet_ids" {
-  description = "List of subnet IDs for the RDS Proxy."
+# Subnet IDs for RDS instance and RDS Proxy
+variable "rds_subnet_ids" {
+  description = "List of subnet IDs for the RDS instance and RDS Proxy."
+  type        = list(string)
+}
+
+# Security group IDs for the RDS instance
+variable "rds_instance_security_group_ids" {
+  description = "List of security group IDs for the RDS instance."
   type        = list(string)
 }
 
@@ -42,35 +48,59 @@ variable "nlb_security_group_ids" {
   type        = list(string)
 }
 
-# The endpoint of the RDS Proxy (optional if creating within this module)
-variable "rds_proxy_endpoint" {
-  description = "The endpoint of the RDS Proxy."
-  type        = string
-  default     = null
-}
-
 # RDS Proxy name
 variable "rds_proxy_name" {
   description = "Name of the RDS Proxy."
   type        = string
 }
 
-# RDS Proxy target RDS instance or cluster ARN
-variable "rds_proxy_target_arn" {
-  description = "ARN of the RDS DB instance or cluster to target."
+# Database configurations
+variable "database_name" {
+  description = "The name of the database to create."
   type        = string
 }
 
-# IAM role ARN for the RDS Proxy to access secrets
-variable "rds_proxy_iam_auth_role_arn" {
-  description = "IAM role ARN that the RDS Proxy uses to access secrets in AWS Secrets Manager."
+variable "database_engine" {
+  description = "The database engine to use (e.g., mysql, postgres)."
   type        = string
 }
 
-# Secrets Manager secret IDs for the RDS Proxy
-variable "rds_proxy_secrets" {
-  description = "List of Secrets Manager secret IDs for the RDS Proxy."
-  type        = list(string)
+variable "database_engine_version" {
+  description = "The version of the database engine."
+  type        = string
+}
+
+variable "database_instance_class" {
+  description = "The instance class to use for the database."
+  type        = string
+}
+
+variable "database_username" {
+  description = "The username for the master DB user."
+  type        = string
+}
+
+variable "database_password" {
+  description = "The password for the master DB user."
+  type        = string
+  sensitive   = true
+}
+
+variable "allocated_storage" {
+  description = "The allocated storage in GBs."
+  type        = number
+}
+
+variable "storage_type" {
+  description = "The storage type to use."
+  type        = string
+  default     = "gp2"
+}
+
+variable "multi_az" {
+  description = "Specifies if the RDS instance is multi-AZ."
+  type        = bool
+  default     = false
 }
 
 # S3 bucket containing the Lambda function code

@@ -17,3 +17,9 @@ output "nlb_dns_name" {
   description = "The DNS name of the Network Load Balancer."
   value       = aws_lb.nlb.dns_name
 }
+
+# Output the RDS instance endpoint
+output "rds_instance_endpoint" {
+  description = "The endpoint of the RDS instance."
+  value       = aws_db_instance.db_instance.endpoint
+}
